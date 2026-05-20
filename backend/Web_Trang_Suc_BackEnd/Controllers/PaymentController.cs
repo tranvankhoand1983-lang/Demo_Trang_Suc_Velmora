@@ -103,7 +103,7 @@ namespace web_Trang_suc_BE.Controllers
                     if (order.PaymentStatus != "Paid")
                     {
                         order.PaymentStatus = "Paid";
-                        order.OrderStatus = "Processing";
+                        order.OrderStatus = "Chờ lấy hàng";
                         order.PaidAt = DateTime.Now;
                         await _context.SaveChangesAsync();
                     }
@@ -114,7 +114,7 @@ namespace web_Trang_suc_BE.Controllers
                     if (order.PaymentStatus != "Paid")
                     {
                         order.PaymentStatus = "Failed";
-                        order.OrderStatus = "Cancelled";
+                        order.OrderStatus = "Hủy";
 
                         foreach (var item in order.Items)
                         {

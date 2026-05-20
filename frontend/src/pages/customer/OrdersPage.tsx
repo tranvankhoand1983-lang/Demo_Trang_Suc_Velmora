@@ -31,13 +31,13 @@ const OrdersPage: React.FC = () => {
           })),
           total: o.totalAmount,
           status: (() => {
-            const s = (o.orderStatus || '').toLowerCase();
-            if (s === 'pending') return 'Chờ xử lý';
-            if (s === 'processing') return 'Đang xử lý';
-            if (s === 'confirmed') return 'Đã xác nhận';
-            if (s === 'shipping') return 'Đang giao hàng';
-            if (s === 'completed') return 'Hoàn tất';
-            if (s === 'cancelled') return 'Đã hủy';
+            const s = (o.orderStatus || '');
+            if (s === 'Pending') return 'Chờ xác nhận';
+            if (s === 'Confirmed') return 'Chờ lấy hàng';
+            if (s === 'Processing') return 'Chờ lấy hàng';
+            if (s === 'Shipping') return 'Chờ giao hàng';
+            if (s === 'Completed') return 'Hoàn tất';
+            if (s === 'Cancelled') return 'Hủy';
             return o.orderStatus;
           })(),
           paymentStatus: o.paymentStatus,
@@ -210,15 +210,77 @@ const OrdersPage: React.FC = () => {
                     <span className="order-card__total-label">Tổng thanh toán:</span>
                     <span className="order-card__total-value">{formatPrice(order.total)}</span>
                   </div>
-                  <button 
-                    className="btn-invoice-link"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setSelectedInvoice(order);
-                    }}
-                  >
-                    Xem hóa đơn
-                  </button>
+                  <div className="order-card__footer-actions" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                    {/* Nút tiếp tục thanh toán - hiện khi chưa thanh toán và chưa hủy */}
+                    {order.paymentStatus?.toLowerCase() !== 'paid' && order.status !== 'Hủy' && order.status !== 'Hoàn tất' && order.paymentMethod?.toLowerCase().includes('payos') && (
+                      <button
+                        className="btn-primary"
+                        style={{ fontSize: '13px', padding: '8px 16px' }}
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          try {
+                            const res = await api.post('/payos/create-payment-link', {
+                              orderId: order.id,
+                              amount: order.total,
+                              description: 'Thanh toán đơn ' + order.id
+                            });
+                            window.location.href = res.data.url;
+                          } catch (err) {
+                            alert('Không thể tạo link thanh toán. Vui lòng thử lại.');
+                          }
+                        }}
+                      >
+                        Tiếp tục thanh toán
+                      </button>
+                    )}
+                    {/* Nút hủy đơn - hiện khi chưa thanh toán và chưa hủy */}
+                    {order.paymentStatus?.toLowerCase() !== 'paid' && order.status !== 'Hủy' && order.status !== 'Hoàn tất' && (
+                      <button
+                        className="btn-outline"
+                        style={{ fontSize: '13px', padding: '8px 16px', color: '#e74c3c', borderColor: '#e74c3c' }}
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          if (window.confirm('Bạn có chắc muốn hủy đơn hàng này?')) {
+                            try {
+                              await api.patch(`/orders/${order.id}/cancel`);
+                              setOrders(orders.map(o => o.id === order.id ? { ...o, status: 'Hủy', paymentStatus: 'Failed' } : o));
+                            } catch (err) {
+                              alert('Có lỗi xảy ra khi hủy đơn hàng');
+                            }
+                          }
+                        }}
+                      >
+                        Hủy đơn
+                      </button>
+                    )}
+                    {order.status === 'Chờ giao hàng' && (
+                      <button
+                        className="btn-primary"
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          if (window.confirm('Bạn xác nhận đã nhận được đơn hàng này?')) {
+                            try {
+                              await api.patch(`/orders/${order.id}/receive`);
+                              setOrders(orders.map(o => o.id === order.id ? { ...o, status: 'Hoàn tất' } : o));
+                            } catch (err) {
+                              alert('Có lỗi xảy ra khi xác nhận nhận hàng');
+                            }
+                          }
+                        }}
+                      >
+                        Đã nhận được hàng
+                      </button>
+                    )}
+                    <button 
+                      className="btn-invoice-link"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedInvoice(order);
+                      }}
+                    >
+                      Xem hóa đơn
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}

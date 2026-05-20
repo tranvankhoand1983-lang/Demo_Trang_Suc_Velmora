@@ -142,7 +142,9 @@ namespace web_Trang_suc_BE.Controllers
                     ShippingMethod = dto.ShippingMethod,
                     PaymentMethod = dto.PaymentMethod,
                     DiscountCode = dto.DiscountCode,
-                    CreatedAt = DateTime.Now
+                    CreatedAt = DateTime.Now,
+                    OrderStatus = "Chờ xác nhận",
+                    PaymentStatus = "Pending"
                 };
 
                 decimal subtotal = 0;
@@ -163,8 +165,7 @@ namespace web_Trang_suc_BE.Controllers
                     decimal unitPrice = variant.Price > 0 ? variant.Price : (variant.Product?.Price ?? 0);
                     subtotal += unitPrice * itemDto.Quantity;
 
-                    // Deduct stock
-                    variant.StockQuantity -= itemDto.Quantity;
+                    // KHÔNG trừ tồn kho ở đây - chỉ trừ khi tiền về (webhook Paid)
 
                     // Create OrderItem
                     order.Items.Add(new OrderItem
@@ -179,7 +180,11 @@ namespace web_Trang_suc_BE.Controllers
                 }
 
                 // 5. Handle Shipping Fee
-                order.ShippingFee = dto.ShippingMethod.ToLower().Contains("express") ? 50000 : 30000;
+                order.ShippingFee = dto.ShippingMethod?.ToLower() switch {
+                    var m when m != null && m.Contains("express") => 60000,
+                    "standard" => 30000,
+                    _ => 0 // free hoặc bất kỳ giá trị nào khác
+                };
 
                 // 6. Handle Discount Code Validation
                 if (!string.IsNullOrEmpty(dto.DiscountCode))
@@ -248,14 +253,54 @@ namespace web_Trang_suc_BE.Controllers
             var order = await _context.Orders!.FindAsync(id);
             if (order == null) return NotFound(new { message = "Đơn hàng không tồn tại" });
 
-            var allowedStatuses = new[] { "Pending", "Confirmed", "Processing", "Shipping", "Completed", "Cancelled" };
+            var allowedStatuses = new[] { "Chờ xác nhận", "Chờ lấy hàng", "Chờ giao hàng", "Hoàn tất", "Hủy" };
             if (!allowedStatuses.Contains(dto.Status))
-                return BadRequest(new { message = "Trạng thái không hợp lệ" });
+                return BadRequest(new { message = "Trạng thái không hợp lệ: " + dto.Status });
 
             order.OrderStatus = dto.Status;
             await _context.SaveChangesAsync();
 
             return Ok(new { message = "Cập nhật trạng thái thành công", status = order.OrderStatus });
+        }
+
+        [HttpPatch("{id}/receive")]
+        [Authorize]
+        public async Task<IActionResult> MarkOrderAsReceived(string id)
+        {
+            var userId = User.FindFirst("userId")?.Value ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var order = await _context.Orders!.FindAsync(id);
+            if (order == null) return NotFound(new { message = "Đơn hàng không tồn tại" });
+
+            if (order.UserId != userId) return Forbid();
+
+            if (order.OrderStatus != "Chờ giao hàng")
+                return BadRequest(new { message = "Chỉ có thể xác nhận nhận hàng khi đơn đang được giao" });
+
+            order.OrderStatus = "Hoàn tất";
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Cập nhật trạng thái thành công", status = order.OrderStatus });
+        }
+
+        [HttpPatch("{id}/cancel")]
+        [Authorize]
+        public async Task<IActionResult> CancelOrder(string id)
+        {
+            var userId = User.FindFirst("userId")?.Value ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var order = await _context.Orders!.FindAsync(id);
+            if (order == null) return NotFound(new { message = "Đơn hàng không tồn tại" });
+
+            if (order.UserId != userId) return Forbid();
+
+            // Chỉ cho phép hủy khi chưa thanh toán (Chờ xác nhận)
+            if (order.PaymentStatus == "Paid")
+                return BadRequest(new { message = "Không thể hủy đơn đã thanh toán" });
+
+            order.OrderStatus = "Hủy";
+            order.PaymentStatus = "Failed";
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Đã hủy đơn hàng", status = order.OrderStatus });
         }
     }
 

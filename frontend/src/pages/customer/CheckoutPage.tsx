@@ -218,20 +218,20 @@ const CheckoutPage: React.FC = () => {
         return;
       }
 
-      if (form.payment.method === 'vnpay' && res.data.orderId) {
-        // Call backend to get VNPAY payment URL
+      if (form.payment.method === 'payos' && res.data.orderId) {
         try {
-          const vnpayRes = await api.post('/payment/create-vnpay-url', {
+          const payosRes = await api.post('/payos/create-payment-link', {
             orderId: res.data.orderId,
-            amount: finalAmount
+            amount: finalAmount,
+            description: res.data.orderId
           });
-          if (vnpayRes.data.url) {
-            window.location.href = vnpayRes.data.url;
+          if (payosRes.data.url) {
+            window.location.href = payosRes.data.url;
             return;
           }
-        } catch (vnpErr) {
-          console.error('VNPAY Error:', vnpErr);
-          showNotification('Không thể khởi tạo thanh toán VNPAY. Vui lòng thử lại.', 'error');
+        } catch (payosErr) {
+          console.error('PayOS Error:', payosErr);
+          showNotification('Không thể khởi tạo thanh toán PayOS. Vui lòng thử lại.', 'error');
         }
       }
 
@@ -616,22 +616,20 @@ const CheckoutPage: React.FC = () => {
                   </div>
                 </label>
 
-                {/* VNPAY */}
-                <label className={`checkout-payment-method ${form.payment.method === 'vnpay' ? 'active' : ''}`}>
+                {/* PayOS */}
+                <label className={`checkout-payment-method ${form.payment.method === 'payos' ? 'active' : ''}`}>
                   <input
                     type="radio"
                     name="paymentMethod"
-                    value="vnpay"
-                    checked={form.payment.method === 'vnpay'}
-                    onChange={() => setForm(p => ({ ...p, payment: { ...p.payment, method: 'vnpay' } }))}
+                    value="payos"
+                    checked={form.payment.method === 'payos'}
+                    onChange={() => setForm(p => ({ ...p, payment: { ...p.payment, method: 'payos' } }))}
                   />
                   <span className="checkout-payment-method__radio" />
                   <div className="vnpay-method-label">
-                    <img src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Icon-VNPAY-QR.png" alt="VNPAY" style={{ height: '18px' }} />
-                    <span style={{ marginLeft: '8px', fontSize: '14px', fontWeight: 500 }}>VNPAY (ATM / Visa / QR)</span>
+                    <span style={{ fontSize: '14px', fontWeight: 500 }}>PayOS (Quét mã VietQR)</span>
                   </div>
                 </label>
-
                 {/* VietQR Info Panel */}
                 {form.payment.method === 'vietqr' && (
                   <div className="vietqr-info-panel">
@@ -648,15 +646,17 @@ const CheckoutPage: React.FC = () => {
                   </div>
                 )}
 
-                {/* VNPAY Info Panel */}
-                {form.payment.method === 'vnpay' && (
+                {/* PayOS Info Panel */}
+                {form.payment.method === 'payos' && (
                   <div className="vnpay-info-panel">
                     <div className="vnpay-info-panel__icon">
-                      <img src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Icon-VNPAY-QR.png" alt="VNPAY" style={{ height: '32px' }} />
+                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                      </svg>
                     </div>
                     <div className="vnpay-info-panel__content">
-                      <p className="vnpay-info-panel__title">Thanh toán qua cổng VNPAY</p>
-                      <p className="vnpay-info-panel__desc">Bạn sẽ được chuyển hướng đến cổng VNPAY để thanh toán bằng thẻ ATM, Visa, Master hoặc quét mã QR.</p>
+                      <p className="vnpay-info-panel__title">Thanh toán qua PayOS (VietQR)</p>
+                      <p className="vnpay-info-panel__desc">Bạn sẽ được chuyển hướng sang cổng thanh toán an toàn của PayOS để quét mã QR bằng app ngân hàng của mình.</p>
                     </div>
                   </div>
                 )}

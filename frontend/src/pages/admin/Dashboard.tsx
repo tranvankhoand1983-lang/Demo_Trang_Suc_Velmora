@@ -122,13 +122,13 @@ const Dashboard: React.FC = () => {
                   <td>
                     <span className={`admin-status-badge ${order.status.toLowerCase()}`}>
                       {(() => {
-                        const s = (order.status || '').toLowerCase();
-                        if (s === 'pending') return 'Chờ xử lý';
-                        if (s === 'processing') return 'Đang xử lý';
-                        if (s === 'confirmed') return 'Đã xác nhận';
-                        if (s === 'shipping') return 'Đang giao';
-                        if (s === 'completed') return 'Hoàn tất';
-                        if (s === 'cancelled') return 'Đã hủy';
+                        const s = (order.status || '');
+                        if (s === 'Pending') return 'Chờ xác nhận';
+                        if (s === 'Confirmed') return 'Chờ lấy hàng';
+                        if (s === 'Processing') return 'Chờ lấy hàng';
+                        if (s === 'Shipping') return 'Chờ giao hàng';
+                        if (s === 'Completed') return 'Hoàn tất';
+                        if (s === 'Cancelled') return 'Hủy';
                         return order.status;
                       })()}
                     </span>

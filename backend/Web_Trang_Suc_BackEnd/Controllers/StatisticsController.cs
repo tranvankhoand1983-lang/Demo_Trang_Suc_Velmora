@@ -18,7 +18,7 @@ namespace web_Trang_suc_BE.Controllers
         {
             var totalOrders = await _context.Orders!.CountAsync();
             var totalRevenue = await _context.Orders!
-                .Where(o => o.OrderStatus.ToLower() == "completed" || o.PaymentStatus.ToLower() == "paid")
+                .Where(o => o.OrderStatus.ToLower() == "hoàn tất" || o.PaymentStatus.ToLower() == "paid")
                 .SumAsync(o => o.TotalAmount);
             var newUsers = await _context.Users!.CountAsync();
             var productCount = await _context.Products!.CountAsync();
@@ -71,7 +71,7 @@ namespace web_Trang_suc_BE.Controllers
             }
 
             var revenueDataQuery = _context.Orders!
-                .Where(o => (o.OrderStatus.ToLower() == "completed" || o.PaymentStatus.ToLower() == "paid") && o.CreatedAt >= startDate && o.CreatedAt <= endDate);
+                .Where(o => (o.OrderStatus.ToLower() == "hoàn tất" || o.PaymentStatus.ToLower() == "paid") && o.CreatedAt >= startDate && o.CreatedAt <= endDate);
 
             if (period.ToLower() == "week")
             {

@@ -78,7 +78,7 @@ namespace web_Trang_suc_BE.Models.Entities
 
         [Column("orderStatus")]
         [MaxLength(50)]
-        public string OrderStatus { get; set; } = "pending";
+        public string OrderStatus { get; set; } = "Chờ xác nhận";
 
         [Column("discountCode")]
         [MaxLength(50)]

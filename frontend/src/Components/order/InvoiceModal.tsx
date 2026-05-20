@@ -112,7 +112,7 @@ const InvoiceModal: React.FC<InvoiceModalProps> = ({ order, onClose }) => {
                     </div>
                   );
                 }
-                if (os === 'đã hủy' || os === 'cancelled' || ps === 'failed') {
+                if (os === 'hủy' || os === 'đã hủy' || os === 'cancelled' || ps === 'failed') {
                   return (
                     <div className="invoice-stamp invoice-stamp--cancelled">
                       <span>ĐÃ HỦY</span>

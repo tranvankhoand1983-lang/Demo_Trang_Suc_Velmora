@@ -27,7 +27,7 @@ namespace web_Trang_suc_BE.Controllers
                     isActive = u.IsActive,
                     createdAt = u.CreatedAt,
                     totalOrders = _context.Orders!.Count(o => o.UserId == u.Id),
-                    totalSpent = _context.Orders!.Where(o => o.UserId == u.Id && (o.OrderStatus.ToLower() == "completed" || o.PaymentStatus.ToLower() == "paid" || o.OrderStatus.ToLower() == "confirmed" || o.OrderStatus.ToLower() == "shipping")).Sum(o => o.TotalAmount)
+                    totalSpent = _context.Orders!.Where(o => o.UserId == u.Id && (o.OrderStatus.ToLower() == "hoàn tất" || o.PaymentStatus.ToLower() == "paid")).Sum(o => o.TotalAmount)
                 })
                 .OrderByDescending(u => u.createdAt)
                 .ToListAsync();
@@ -175,7 +175,7 @@ namespace web_Trang_suc_BE.Controllers
                     isActive = true, // Default to true since User entity doesn't have IsActive
                     createdAt = u.CreatedAt,
                     totalOrders = _context.Orders!.Count(o => o.UserId == u.Id),
-                    totalSpent = _context.Orders!.Where(o => o.UserId == u.Id && (o.OrderStatus.ToLower() == "completed" || o.PaymentStatus.ToLower() == "paid" || o.OrderStatus.ToLower() == "confirmed" || o.OrderStatus.ToLower() == "shipping")).Sum(o => o.TotalAmount)
+                    totalSpent = _context.Orders!.Where(o => o.UserId == u.Id && (o.OrderStatus.ToLower() == "hoàn tất" || o.PaymentStatus.ToLower() == "paid")).Sum(o => o.TotalAmount)
                 })
                 .OrderByDescending(u => u.createdAt)
                 .Take(50) // Limit search results

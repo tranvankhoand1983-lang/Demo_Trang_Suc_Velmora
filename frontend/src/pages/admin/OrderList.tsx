@@ -92,13 +92,13 @@ const OrderList: React.FC = () => {
                 <td>
                   <span className="badge" style={{ backgroundColor: getStatusColor(o.orderStatus), color: 'white' }}>
                     {(() => {
-                      const s = (o.orderStatus || '').toLowerCase();
-                      if (s === 'pending') return 'Chờ xử lý';
-                      if (s === 'processing') return 'Đang xử lý';
-                      if (s === 'confirmed') return 'Đã xác nhận';
-                      if (s === 'shipping') return 'Đang giao';
-                      if (s === 'completed') return 'Hoàn tất';
-                      if (s === 'cancelled') return 'Đã hủy';
+                      const s = (o.orderStatus || '');
+                      if (s === 'Pending') return 'Chờ xác nhận';
+                      if (s === 'Confirmed') return 'Chờ lấy hàng';
+                      if (s === 'Processing') return 'Chờ lấy hàng';
+                      if (s === 'Shipping') return 'Chờ giao hàng';
+                      if (s === 'Completed') return 'Hoàn tất';
+                      if (s === 'Cancelled') return 'Hủy';
                       return o.orderStatus;
                     })()}
                   </span>
@@ -110,12 +110,11 @@ const OrderList: React.FC = () => {
                     onChange={(e) => updateStatus(o.id, e.target.value)}
                     style={{ padding: '4px 8px', borderRadius: '4px', border: '1px solid #ddd' }}
                   >
-                    <option value="Pending">Chờ xử lý</option>
-                    <option value="Processing">Đang xử lý</option>
-                    <option value="Confirmed">Xác nhận</option>
-                    <option value="Shipping">Đang giao</option>
-                    <option value="Completed">Hoàn tất</option>
-                    <option value="Cancelled">Hủy</option>
+                    <option value="Chờ xác nhận">Chờ xác nhận</option>
+                    <option value="Chờ lấy hàng">Chờ lấy hàng</option>
+                    <option value="Chờ giao hàng">Chờ giao hàng</option>
+                    <option value="Hoàn tất">Hoàn tất</option>
+                    <option value="Hủy">Hủy</option>
                   </select>
                 </td>
               </tr>
