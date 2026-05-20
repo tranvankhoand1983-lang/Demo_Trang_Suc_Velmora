@@ -104,7 +104,7 @@ const InvoiceModal: React.FC<InvoiceModalProps> = ({ order, onClose }) => {
               {(() => {
                 const ps = (order.paymentStatus || '').toLowerCase();
                 const os = (order.status || '').toLowerCase();
-                if (ps === 'paid') {
+                if (ps === 'paid' || os === 'chờ lấy hàng' || os === 'chờ giao hàng' || os === 'hoàn tất') {
                   return (
                     <div className="invoice-stamp">
                       <span>ĐÃ THANH TOÁN</span>

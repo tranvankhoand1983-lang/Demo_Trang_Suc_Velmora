@@ -165,7 +165,8 @@ namespace web_Trang_suc_BE.Controllers
                     decimal unitPrice = variant.Price > 0 ? variant.Price : (variant.Product?.Price ?? 0);
                     subtotal += unitPrice * itemDto.Quantity;
 
-                    // KHÔNG trừ tồn kho ở đây - chỉ trừ khi tiền về (webhook Paid)
+                    // Trừ tồn kho ngay khi đặt đơn hàng (trừ phi sau này bị Hủy thì sẽ hoàn lại)
+                    variant.StockQuantity -= itemDto.Quantity;
 
                     // Create OrderItem
                     order.Items.Add(new OrderItem
@@ -250,17 +251,50 @@ namespace web_Trang_suc_BE.Controllers
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> UpdateOrderStatus(string id, [FromBody] UpdateOrderStatusDto dto)
         {
-            var order = await _context.Orders!.FindAsync(id);
+            var order = await _context.Orders!.Include(o => o.Items).FirstOrDefaultAsync(o => o.Id == id);
             if (order == null) return NotFound(new { message = "Đơn hàng không tồn tại" });
 
             var allowedStatuses = new[] { "Chờ xác nhận", "Chờ lấy hàng", "Chờ giao hàng", "Hoàn tất", "Hủy" };
             if (!allowedStatuses.Contains(dto.Status))
                 return BadRequest(new { message = "Trạng thái không hợp lệ: " + dto.Status });
 
+            // Nếu đổi sang trạng thái Hủy, thực hiện hoàn lại tồn kho
+            if (dto.Status == "Hủy" && order.OrderStatus != "Hủy")
+            {
+                foreach (var item in order.Items)
+                {
+                    var variant = await _context.ProductVariants!
+                        .FirstOrDefaultAsync(v => v.Id == item.VariantId);
+                    if (variant != null)
+                        variant.StockQuantity += item.Quantity;
+                }
+            }
+            // Nếu đổi từ Hủy sang trạng thái khác, thực hiện trừ lại tồn kho
+            else if (dto.Status != "Hủy" && order.OrderStatus == "Hủy")
+            {
+                foreach (var item in order.Items)
+                {
+                    var variant = await _context.ProductVariants!
+                        .FirstOrDefaultAsync(v => v.Id == item.VariantId);
+                    if (variant != null)
+                        variant.StockQuantity = Math.Max(0, variant.StockQuantity - item.Quantity);
+                }
+            }
+
+            // Đồng bộ trạng thái thanh toán sang Paid khi ở Chờ lấy hàng, Chờ giao hàng, hoặc Hoàn tất
+            if (dto.Status == "Chờ lấy hàng" || dto.Status == "Chờ giao hàng" || dto.Status == "Hoàn tất")
+            {
+                if (order.PaymentStatus != "Paid")
+                {
+                    order.PaymentStatus = "Paid";
+                    order.PaidAt = DateTime.Now;
+                }
+            }
+
             order.OrderStatus = dto.Status;
             await _context.SaveChangesAsync();
 
-            return Ok(new { message = "Cập nhật trạng thái thành công", status = order.OrderStatus });
+            return Ok(new { message = "Cập nhật trạng thái thành công", status = order.OrderStatus, paymentStatus = order.PaymentStatus });
         }
 
         [HttpPatch("{id}/receive")]
@@ -277,9 +311,14 @@ namespace web_Trang_suc_BE.Controllers
                 return BadRequest(new { message = "Chỉ có thể xác nhận nhận hàng khi đơn đang được giao" });
 
             order.OrderStatus = "Hoàn tất";
+            if (order.PaymentStatus != "Paid")
+            {
+                order.PaymentStatus = "Paid";
+                order.PaidAt = DateTime.Now;
+            }
             await _context.SaveChangesAsync();
 
-            return Ok(new { message = "Cập nhật trạng thái thành công", status = order.OrderStatus });
+            return Ok(new { message = "Cập nhật trạng thái thành công", status = order.OrderStatus, paymentStatus = order.PaymentStatus });
         }
 
         [HttpPatch("{id}/cancel")]
@@ -287,7 +326,7 @@ namespace web_Trang_suc_BE.Controllers
         public async Task<IActionResult> CancelOrder(string id)
         {
             var userId = User.FindFirst("userId")?.Value ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var order = await _context.Orders!.FindAsync(id);
+            var order = await _context.Orders!.Include(o => o.Items).FirstOrDefaultAsync(o => o.Id == id);
             if (order == null) return NotFound(new { message = "Đơn hàng không tồn tại" });
 
             if (order.UserId != userId) return Forbid();
@@ -295,6 +334,18 @@ namespace web_Trang_suc_BE.Controllers
             // Chỉ cho phép hủy khi chưa thanh toán (Chờ xác nhận)
             if (order.PaymentStatus == "Paid")
                 return BadRequest(new { message = "Không thể hủy đơn đã thanh toán" });
+
+            if (order.OrderStatus == "Hủy")
+                return BadRequest(new { message = "Đơn hàng đã ở trạng thái hủy" });
+
+            // Hoàn lại tồn kho
+            foreach (var item in order.Items)
+            {
+                var variant = await _context.ProductVariants!
+                    .FirstOrDefaultAsync(v => v.Id == item.VariantId);
+                if (variant != null)
+                    variant.StockQuantity += item.Quantity;
+            }
 
             order.OrderStatus = "Hủy";
             order.PaymentStatus = "Failed";

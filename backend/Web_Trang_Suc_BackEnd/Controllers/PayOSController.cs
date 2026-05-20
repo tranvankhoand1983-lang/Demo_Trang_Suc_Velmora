@@ -113,21 +113,12 @@ namespace web_Trang_suc_BE.Controllers
                         order.OrderStatus = "Chờ lấy hàng";
                         order.PaidAt = DateTime.Now;
 
-                        // Trừ tồn kho khi tiền về thành công
-                        foreach (var item in order.Items)
-                        {
-                            var variant = await _context.ProductVariants!
-                                .FirstOrDefaultAsync(v => v.Id == item.VariantId);
-                            if (variant != null)
-                                variant.StockQuantity = Math.Max(0, variant.StockQuantity - item.Quantity);
-                        }
-
                         await _context.SaveChangesAsync();
                     }
                 }
                 else // Thanh toán thất bại/hủy
                 {
-                    if (order.PaymentStatus != "Paid")
+                    if (order.PaymentStatus != "Paid" && order.OrderStatus != "Hủy")
                     {
                         order.PaymentStatus = "Failed";
                         order.OrderStatus = "Hủy";
@@ -181,22 +172,21 @@ namespace web_Trang_suc_BE.Controllers
                     order.OrderStatus = "Chờ lấy hàng";
                     order.PaidAt = DateTime.Now;
 
-                    // Trừ tồn kho khi tiền về thành công
+                    await _context.SaveChangesAsync();
+                }
+                else if (status == "CANCELLED" && order.PaymentStatus != "Paid" && order.OrderStatus != "Hủy")
+                {
+                    order.PaymentStatus = "Failed";
+                    order.OrderStatus = "Hủy";
+
+                    // Hoàn lại tồn kho
                     foreach (var item in order.Items)
                     {
                         var variant = await _context.ProductVariants!
                             .FirstOrDefaultAsync(v => v.Id == item.VariantId);
                         if (variant != null)
-                            variant.StockQuantity = Math.Max(0, variant.StockQuantity - item.Quantity);
+                            variant.StockQuantity += item.Quantity;
                     }
-
-                    await _context.SaveChangesAsync();
-                }
-                else if (status == "CANCELLED" && order.PaymentStatus != "Paid")
-                {
-                    order.PaymentStatus = "Failed";
-                    order.OrderStatus = "Hủy";
-                    // Không cần hoàn lại tồn kho vì tồn kho chưa bị trừ
                     await _context.SaveChangesAsync();
                 }
 

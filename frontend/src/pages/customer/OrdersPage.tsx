@@ -22,7 +22,7 @@ const OrdersPage: React.FC = () => {
         const mappedOrders: Order[] = res.data.map((o: any) => ({
           id: o.id,
           date: o.createdAt,
-          paymentDate: o.createdAt,
+          paymentDate: o.paidAt || o.createdAt,
           items: o.items.map((item: any) => ({
             product: { name: item.productName, images: [item.productImage || ''] },
             quantity: item.quantity,
@@ -41,8 +41,17 @@ const OrdersPage: React.FC = () => {
             return o.orderStatus;
           })(),
           paymentStatus: o.paymentStatus,
+          paymentMethod: o.paymentMethod || 'PayOS', // Fallback to PayOS if null
+          shippingMethod: o.shippingMethod || 'Standard',
           recipientName: o.recipientName,
+          email: o.email || '',
+          phone: o.phone || '',
           address: o.address || '',
+          company: o.company || '',
+          apartment: o.apartment || '',
+          city: o.city || '',
+          country: o.country || '',
+          postalCode: o.postalCode || ''
         }));
         setOrders(mappedOrders);
       } catch (err) {
@@ -174,8 +183,9 @@ const OrdersPage: React.FC = () => {
                            <label>Tình trạng thanh toán</label>
                            {(() => {
                              const ps = (order.paymentStatus || '').toLowerCase();
-                             if (ps === 'paid') return <span style={{ color: '#27ae60', fontWeight: '600' }}>Đã thanh toán</span>;
-                             if (ps === 'failed') return <span style={{ color: '#ef4444', fontWeight: '600' }}>Thanh toán thất bại</span>;
+                             const os = (order.status || '').toLowerCase();
+                             if (ps === 'paid' || os === 'chờ lấy hàng' || os === 'chờ giao hàng' || os === 'hoàn tất') return <span style={{ color: '#27ae60', fontWeight: '600' }}>Đã thanh toán</span>;
+                             if (os === 'hủy' || ps === 'failed') return <span style={{ color: '#ef4444', fontWeight: '600' }}>Đã hủy</span>;
                              return <span style={{ color: '#f59e0b', fontWeight: '600' }}>Chưa thanh toán</span>;
                            })()}
                          </div>
@@ -212,7 +222,7 @@ const OrdersPage: React.FC = () => {
                   </div>
                   <div className="order-card__footer-actions" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                     {/* Nút tiếp tục thanh toán - hiện khi chưa thanh toán và chưa hủy */}
-                    {order.paymentStatus?.toLowerCase() !== 'paid' && order.status !== 'Hủy' && order.status !== 'Hoàn tất' && order.paymentMethod?.toLowerCase().includes('payos') && (
+                    {order.paymentStatus?.toLowerCase() !== 'paid' && order.status !== 'Hủy' && order.status !== 'Hoàn tất' && order.paymentMethod?.toLowerCase() !== 'cod' && (
                       <button
                         className="btn-primary"
                         style={{ fontSize: '13px', padding: '8px 16px' }}
