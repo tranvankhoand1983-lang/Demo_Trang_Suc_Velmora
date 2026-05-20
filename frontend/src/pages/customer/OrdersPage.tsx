@@ -30,9 +30,17 @@ const OrdersPage: React.FC = () => {
             priceAtPurchase: item.price
           })),
           total: o.totalAmount,
-          status: o.orderStatus === 'Processing' ? 'Đang xử lý' : 
-                  o.orderStatus === 'Pending' ? 'Chờ xử lý' :
-                  o.orderStatus === 'Completed' ? 'Hoàn tất' : o.orderStatus,
+          status: (() => {
+            const s = (o.orderStatus || '').toLowerCase();
+            if (s === 'pending') return 'Chờ xử lý';
+            if (s === 'processing') return 'Đang xử lý';
+            if (s === 'confirmed') return 'Đã xác nhận';
+            if (s === 'shipping') return 'Đang giao hàng';
+            if (s === 'completed') return 'Hoàn tất';
+            if (s === 'cancelled') return 'Đã hủy';
+            return o.orderStatus;
+          })(),
+          paymentStatus: o.paymentStatus,
           recipientName: o.recipientName,
           address: o.address || '',
         }));
@@ -163,9 +171,14 @@ const OrdersPage: React.FC = () => {
                           <span>{order.paymentMethod || 'Thẻ tín dụng'}</span>
                         </div>
                         <div className="order-details__item">
-                          <label>Tình trạng thanh toán</label>
-                          <span style={{ color: '#27ae60', fontWeight: '600' }}>Đã thanh toán</span>
-                        </div>
+                           <label>Tình trạng thanh toán</label>
+                           {(() => {
+                             const ps = (order.paymentStatus || '').toLowerCase();
+                             if (ps === 'paid') return <span style={{ color: '#27ae60', fontWeight: '600' }}>Đã thanh toán</span>;
+                             if (ps === 'failed') return <span style={{ color: '#ef4444', fontWeight: '600' }}>Thanh toán thất bại</span>;
+                             return <span style={{ color: '#f59e0b', fontWeight: '600' }}>Chưa thanh toán</span>;
+                           })()}
+                         </div>
                         <div className="order-details__item">
                           <label>Thời gian thanh toán</label>
                           <span>{new Date(order.paymentDate || order.date).toLocaleString('vi-VN')}</span>

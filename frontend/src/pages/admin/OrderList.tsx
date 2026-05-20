@@ -91,12 +91,16 @@ const OrderList: React.FC = () => {
                 <td>{new Date(o.createdAt).toLocaleDateString('vi-VN')}</td>
                 <td>
                   <span className="badge" style={{ backgroundColor: getStatusColor(o.orderStatus), color: 'white' }}>
-                    {o.orderStatus === 'Processing' ? 'Đang xử lý' : 
-                     o.orderStatus === 'Pending' ? 'Chờ xử lý' :
-                     o.orderStatus === 'Confirmed' ? 'Đã xác nhận' :
-                     o.orderStatus === 'Shipping' ? 'Đang giao' :
-                     o.orderStatus === 'Completed' ? 'Hoàn tất' :
-                     o.orderStatus === 'Cancelled' ? 'Đã hủy' : o.orderStatus}
+                    {(() => {
+                      const s = (o.orderStatus || '').toLowerCase();
+                      if (s === 'pending') return 'Chờ xử lý';
+                      if (s === 'processing') return 'Đang xử lý';
+                      if (s === 'confirmed') return 'Đã xác nhận';
+                      if (s === 'shipping') return 'Đang giao';
+                      if (s === 'completed') return 'Hoàn tất';
+                      if (s === 'cancelled') return 'Đã hủy';
+                      return o.orderStatus;
+                    })()}
                   </span>
                 </td>
                 <td>
@@ -107,7 +111,7 @@ const OrderList: React.FC = () => {
                     style={{ padding: '4px 8px', borderRadius: '4px', border: '1px solid #ddd' }}
                   >
                     <option value="Pending">Chờ xử lý</option>
-                    <option value="Processing">Đang xử lý (VNPAY)</option>
+                    <option value="Processing">Đang xử lý</option>
                     <option value="Confirmed">Xác nhận</option>
                     <option value="Shipping">Đang giao</option>
                     <option value="Completed">Hoàn tất</option>

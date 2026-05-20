@@ -103,6 +103,7 @@ export interface Order {
   items: CartItem[];
   total: number;
   status: string;
+  paymentStatus?: string;
   // Shipping Details (Split)
   recipientName: string;
   email: string;

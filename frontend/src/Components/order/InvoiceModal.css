@@ -215,6 +215,18 @@
   font-size: 10px;
 }
 
+/* Cancelled stamp - grey */
+.invoice-stamp--cancelled {
+  border-color: #6b7280;
+  color: #6b7280;
+}
+
+/* Pending stamp - orange */
+.invoice-stamp--pending {
+  border-color: #f59e0b;
+  color: #f59e0b;
+}
+
 .invoice-note {
   font-size: 11px;
   color: #666;

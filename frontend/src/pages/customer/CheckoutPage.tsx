@@ -187,7 +187,7 @@ const CheckoutPage: React.FC = () => {
         paymentMethod: form.payment.method,
         shippingMethod: form.shippingMethod,
         items: selectedItems.map(item => ({
-          productVariantId: item.variant?.id ?? item.product.variants?.[0]?.id,
+          productVariantId: item.variant?.id ?? item.variantId ?? item.product?.variants?.[0]?.id ?? 0,
           quantity: item.quantity
         })),
         discountCode: state.discountCode
@@ -423,9 +423,10 @@ const CheckoutPage: React.FC = () => {
                   <input
                     type="tel"
                     className="form-control"
-                    placeholder="Số điện thoại (tùy chọn)"
+                    placeholder="Số điện thoại"
                     value={form.shipping.phone}
                     onChange={e => updateShipping('phone', e.target.value)}
+                    required
                     autoComplete="tel"
                   />
                 </div>

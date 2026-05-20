@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import './Dashboard.css';
 
@@ -13,6 +14,7 @@ interface DashboardStats {
 const Dashboard: React.FC = () => {
   const [data, setData] = useState<DashboardStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -38,6 +40,7 @@ const Dashboard: React.FC = () => {
       value: new Intl.NumberFormat('vi-VN').format(data.totalRevenue) + '₫', 
       color: '#c9a96e',
       trend: '15.2%', trendUp: true,
+      link: '/admin/orders',
       icon: <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
     },
     { 
@@ -45,6 +48,7 @@ const Dashboard: React.FC = () => {
       value: data.totalOrders.toString(), 
       color: '#27ae60',
       trend: '8.4%', trendUp: true,
+      link: '/admin/orders',
       icon: <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
     },
     { 
@@ -52,6 +56,7 @@ const Dashboard: React.FC = () => {
       value: data.totalProducts.toString(), 
       color: '#2980b9',
       trend: '1.2%', trendUp: false,
+      link: '/admin/products',
       icon: <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
     },
     { 
@@ -59,6 +64,7 @@ const Dashboard: React.FC = () => {
       value: data.totalCustomers.toString(), 
       color: '#8e44ad',
       trend: '24.5%', trendUp: true,
+      link: '/admin/customers',
       icon: <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
     },
   ];
@@ -72,7 +78,12 @@ const Dashboard: React.FC = () => {
 
       <div className="admin-stats-grid">
         {stats.map((stat, i) => (
-          <div key={i} className="admin-stat-card" style={{ borderTop: `4px solid ${stat.color}` }}>
+          <div 
+            key={i} 
+            className="admin-stat-card" 
+            style={{ borderTop: `4px solid ${stat.color}`, cursor: stat.link ? 'pointer' : 'default' }}
+            onClick={() => stat.link && navigate(stat.link)}
+          >
             <div className="admin-stat-card__top">
               <span className="admin-stat-card__label">{stat.label}</span>
               <div className="admin-stat-card__icon" style={{ color: stat.color, backgroundColor: `${stat.color}15` }}>
@@ -110,7 +121,16 @@ const Dashboard: React.FC = () => {
                   <td>{new Intl.NumberFormat('vi-VN').format(order.totalPrice)}₫</td>
                   <td>
                     <span className={`admin-status-badge ${order.status.toLowerCase()}`}>
-                      {order.status}
+                      {(() => {
+                        const s = (order.status || '').toLowerCase();
+                        if (s === 'pending') return 'Chờ xử lý';
+                        if (s === 'processing') return 'Đang xử lý';
+                        if (s === 'confirmed') return 'Đã xác nhận';
+                        if (s === 'shipping') return 'Đang giao';
+                        if (s === 'completed') return 'Hoàn tất';
+                        if (s === 'cancelled') return 'Đã hủy';
+                        return order.status;
+                      })()}
                     </span>
                   </td>
                 </tr>

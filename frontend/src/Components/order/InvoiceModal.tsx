@@ -101,10 +101,31 @@ const InvoiceModal: React.FC<InvoiceModalProps> = ({ order, onClose }) => {
             <div className="invoice-signature">
               <p>Đại diện VELMORA</p>
               <small>(Ký và đóng dấu)</small>
-              <div className="invoice-stamp">
-                <span>ĐÃ THANH TOÁN</span>
-                <small>{new Date(order.paymentDate || order.date).toLocaleDateString('vi-VN')}</small>
-              </div>
+              {(() => {
+                const ps = (order.paymentStatus || '').toLowerCase();
+                const os = (order.status || '').toLowerCase();
+                if (ps === 'paid') {
+                  return (
+                    <div className="invoice-stamp">
+                      <span>ĐÃ THANH TOÁN</span>
+                      <small>{new Date(order.paymentDate || order.date).toLocaleDateString('vi-VN')}</small>
+                    </div>
+                  );
+                }
+                if (os === 'đã hủy' || os === 'cancelled' || ps === 'failed') {
+                  return (
+                    <div className="invoice-stamp invoice-stamp--cancelled">
+                      <span>ĐÃ HỦY</span>
+                      <small>{new Date(order.date).toLocaleDateString('vi-VN')}</small>
+                    </div>
+                  );
+                }
+                return (
+                  <div className="invoice-stamp invoice-stamp--pending">
+                    <span>CHƯA THANH TOÁN</span>
+                  </div>
+                );
+              })()}
             </div>
           </div>
 
