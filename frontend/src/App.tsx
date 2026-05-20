@@ -25,6 +25,7 @@ import OrdersPage from './pages/customer/OrdersPage';
 import AccountPage from './pages/customer/AccountPage';
 import ContactPage from './pages/customer/ContactPage';
 import Blog from './pages/customer/Blog';
+import NewsPage from './pages/customer/NewsPage';
 import AdminLayout from './pages/admin/AdminLayout';
 import Dashboard from './pages/admin/Dashboard';
 import ProductList from './pages/admin/ProductList';
@@ -95,6 +96,7 @@ function AppContent() {
               <Route path="/account" element={<AccountPage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/blog" element={<Blog />} />
+              <Route path="/news" element={<NewsPage />} />
             </Routes>
           </main>
           <Footer />
