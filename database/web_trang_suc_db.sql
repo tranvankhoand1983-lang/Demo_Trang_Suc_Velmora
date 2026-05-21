@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th4 23, 2026 lúc 06:17 PM
+-- Thời gian đã tạo: Th5 21, 2026 lúc 06:10 AM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.2.12
 
@@ -85,8 +85,7 @@ CREATE TABLE `cart_items` (
 INSERT INTO `cart_items` (`id`, `cartId`, `productId`, `variantId`, `quantity`, `size`) VALUES
 (28, 5, 4, 401, 1, NULL),
 (29, 4, 1, 601, 1, NULL),
-(30, 4, 1, 1, 1, NULL),
-(31, 4, 15, 27, 1, NULL);
+(32, 4, 20, 13, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -183,6 +182,7 @@ CREATE TABLE `orders` (
 --
 
 INSERT INTO `orders` (`id`, `userId`, `firstName`, `lastName`, `email`, `phone`, `company`, `address`, `apartment`, `city`, `country`, `postalCode`, `shippingMethod`, `shippingFee`, `paymentMethod`, `paymentStatus`, `orderStatus`, `discountCode`, `discountAmount`, `totalAmount`, `estimatedDelivery`, `createdAt`, `paidAt`) VALUES
+('ORD-2605106564', 'admin-uuid-001', 'Admin', 'Velmora', 'admin@velmora.com', '0329387676', '', 'minh tân', '', 'Ninh Bình', 'Vietnam', '', 'free', 30000.00, 'vietqr', 'unpaid', 'pending', '', 0.00, 448000.00, NULL, '2026-05-09 18:35:05', NULL),
 ('ORD-5423', 'd7662f9f-f41b-4ec0-8cbc-21018e5018fa', '', '', 'tranvankhoand1983@gmail.com', '', NULL, '', NULL, '', '', NULL, 'free', 0.00, '', 'unpaid', 'pending', NULL, 0.00, 0.00, NULL, '2026-04-20 08:44:16', NULL);
 
 -- --------------------------------------------------------
@@ -200,6 +200,14 @@ CREATE TABLE `order_items` (
   `size` varchar(50) DEFAULT NULL,
   `priceAtPurchase` decimal(15,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `order_items`
+--
+
+INSERT INTO `order_items` (`id`, `orderId`, `productId`, `variantId`, `quantity`, `size`, `priceAtPurchase`) VALUES
+(1, 'ORD-2605106564', 1, 1, 1, '5 (49mm)', 149000.00),
+(2, 'ORD-2605106564', 15, 27, 1, 'M (16cm)', 269000.00);
 
 -- --------------------------------------------------------
 
@@ -340,7 +348,7 @@ CREATE TABLE `product_variants` (
 --
 
 INSERT INTO `product_variants` (`id`, `productId`, `sku`, `size`, `price`, `originalPrice`, `stockQuantity`, `isSale`, `createdAt`) VALUES
-(1, 1, 'VEL-T1-RING-5', '5 (49mm)', 149000.00, 189000.00, 99, 1, '2026-04-22 14:27:57'),
+(1, 1, 'VEL-T1-RING-5', '5 (49mm)', 149000.00, 189000.00, 98, 1, '2026-04-22 14:27:57'),
 (2, 1, 'VEL-T1-RING-6', '6 (51mm)', 149000.00, 189000.00, 100, 1, '2026-04-22 14:27:57'),
 (3, 1, 'VEL-T1-RING-7', '7 (53mm)', 149000.00, 189000.00, 100, 1, '2026-04-22 14:27:57'),
 (4, 2, 'VEL-KNOT-RG-5', '5 (49mm)', 169000.00, 219000.00, 100, 1, '2026-04-22 14:27:57'),
@@ -365,7 +373,7 @@ INSERT INTO `product_variants` (`id`, `productId`, `sku`, `size`, `price`, `orig
 (23, 17, 'VEL-SIGN-OS', 'Freesize', 129000.00, 159000.00, 100, 1, '2026-04-22 14:27:57'),
 (24, 8, 'VEL-KNOT-BAN-S', 'S (15cm)', 295000.00, 359000.00, 100, 1, '2026-04-22 14:27:57'),
 (25, 8, 'VEL-KNOT-BAN-M', 'M (16cm)', 295000.00, 359000.00, 100, 1, '2026-04-22 14:27:57'),
-(27, 15, 'VEL-HARD-BR-M', 'M (16cm)', 269000.00, 319000.00, 100, 1, '2026-04-22 14:27:57'),
+(27, 15, 'VEL-HARD-BR-M', 'M (16cm)', 269000.00, 319000.00, 99, 1, '2026-04-22 14:27:57'),
 (603, 12, 'VEL-ATLAS-BAN-115', '1.15', 300000.00, 0.00, 100, 0, '2026-04-22 08:32:36');
 
 -- --------------------------------------------------------
@@ -401,7 +409,7 @@ INSERT INTO `promotions` (`id`, `name`, `code`, `discount`, `startDate`, `endDat
 (2, 'HELLO', 'MA2HELLO', 50, '2026-04-20 17:00:00', '2026-04-29 17:00:00', 100, 0, 1000000.00, 500000.00, '', '', 1, 1, '2026-04-20 15:04:27'),
 (3, 'Hub Test', 'MA3HUBTEST', 10, '2026-04-20 17:00:00', '2026-04-29 17:00:00', 102, 0, 100000.00, 50000.00, '', '', 1, 1, '2026-04-20 15:17:45'),
 (4, 'HUBREADY', 'MA4HUBREADY', 15, '2026-04-19 17:00:00', '2026-04-27 17:00:00', 100, 0, 500000.00, 100000.00, '', '', 1, 1, '2026-04-20 15:20:13'),
-(5, 'HIGHMIN', 'MA5HIGHMIN', 10, '2026-04-19 17:00:00', '2026-04-29 17:00:00', 100, 0, 600000000.00, 1000000.00, '', '', 1, 1, '2026-04-20 15:21:54');
+(5, 'HIGHMIN', 'MA5HIGHMIN', 10, '2026-05-20 17:00:00', '2026-05-29 17:00:00', 100, 0, 600000000.00, 1000000.00, '', '', 1, 1, '2026-04-20 15:21:54');
 
 -- --------------------------------------------------------
 
@@ -481,17 +489,17 @@ CREATE TABLE `users` (
   `phone` varchar(20) DEFAULT NULL,
   `defaultAddress` text DEFAULT NULL,
   `newsletterOptin` tinyint(1) DEFAULT 0,
-  `isActive` tinyint(1) DEFAULT 1,
-  `createdAt` timestamp NOT NULL DEFAULT current_timestamp()
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `isActive` tinyint(1) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `users`
 --
 
-INSERT INTO `users` (`id`, `fullName`, `email`, `password`, `avatar`, `role`, `provider`, `phone`, `defaultAddress`, `newsletterOptin`, `createdAt`) VALUES
-('admin-uuid-001', 'Admin Velmora', 'admin@velmora.com', 'Admin@123', NULL, 'admin', 'email', '0901234567', NULL, 0, '2026-04-16 19:31:48'),
-('d7662f9f-f41b-4ec0-8cbc-21018e5018fa', 'Trần Minh Nguyệt (TMN)', 'tranvankhoand1983@gmail.com', NULL, 'https://lh3.googleusercontent.com/a/ACg8ocJFchnczOLMGSIB1_cyVTXi140FRHs3aIJiTg3A9aQyOpkA7UkI=s96-c', 'customer', 'google', NULL, NULL, 0, '2026-04-20 08:39:28');
+INSERT INTO `users` (`id`, `fullName`, `email`, `password`, `avatar`, `role`, `provider`, `phone`, `defaultAddress`, `newsletterOptin`, `createdAt`, `isActive`) VALUES
+('admin-uuid-001', 'Admin Velmora', 'admin@velmora.com', 'Admin@123', NULL, 'admin', 'email', '0901234567', NULL, 0, '2026-04-16 19:31:48', 1),
+('d7662f9f-f41b-4ec0-8cbc-21018e5018fa', 'Trần Minh Nguyệt (TMN)', 'tranvankhoand1983@gmail.com', NULL, 'https://lh3.googleusercontent.com/a/ACg8ocJFchnczOLMGSIB1_cyVTXi140FRHs3aIJiTg3A9aQyOpkA7UkI=s96-c', 'customer', 'google', NULL, NULL, 0, '2026-04-20 08:39:28', 1);
 
 -- --------------------------------------------------------
 
@@ -690,7 +698,7 @@ ALTER TABLE `carts`
 -- AUTO_INCREMENT cho bảng `cart_items`
 --
 ALTER TABLE `cart_items`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT cho bảng `categories`
@@ -708,7 +716,7 @@ ALTER TABLE `materials`
 -- AUTO_INCREMENT cho bảng `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT cho bảng `products`
