@@ -81,7 +81,7 @@ export interface ShippingAddress {
 }
 
 export interface PaymentInfo {
-  method: 'credit-card' | 'paypal' | 'momo' | 'vietqr' | 'payos';
+  method: 'credit-card' | 'paypal' | 'momo' | 'payos';
   cardNumber?: string;
   cardName?: string;
   expiry?: string;
