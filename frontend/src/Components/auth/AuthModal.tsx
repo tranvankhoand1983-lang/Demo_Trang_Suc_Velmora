@@ -89,7 +89,10 @@ const AuthModal: React.FC = () => {
           setIsLoading(false);
           return;
         }
-        await register(name, email, password);
+        const ok = await register(name, email, password);
+        if (!ok) {
+          setError('Email đã được đăng ký hoặc thông tin không hợp lệ.');
+        }
       }
     } catch {
       setError('Có lỗi xảy ra. Vui lòng thử lại.');
