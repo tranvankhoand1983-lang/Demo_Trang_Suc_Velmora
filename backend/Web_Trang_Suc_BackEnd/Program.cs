@@ -18,8 +18,9 @@ builder.Services.AddControllers()
 // Configure CORS
 builder.Services.AddCors(options =>
 {
+    var frontendUrl = builder.Configuration["FrontendUrl"] ?? "http://localhost:5173";
     options.AddPolicy("AllowFrontend",
-        policy => policy.WithOrigins("http://localhost:5173", "http://localhost:5174", "http://localhost:5175", "http://localhost:3000") // Added ports to fix 5174 issue
+        policy => policy.WithOrigins("http://localhost:5173", "http://localhost:5174", "http://localhost:5175", "http://localhost:3000", frontendUrl) // Added dynamic origin support
                         .AllowAnyMethod()
                         .AllowAnyHeader()
                         .AllowCredentials());
