@@ -151,12 +151,6 @@ const Footer: React.FC = () => {
         <div className="container">
           <div className="footer__bottom-inner">
             <p className="footer__copyright">© 2025 VELMORA. Tất cả quyền được bảo lưu.</p>
-            <div className="footer__payments">
-              <span className="footer__payment-icon">VISA</span>
-              <span className="footer__payment-icon">MC</span>
-              <span className="footer__payment-icon">MOMO</span>
-              <span className="footer__payment-icon">ZaloPay</span>
-            </div>
           </div>
         </div>
       </div>

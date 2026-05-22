@@ -21,7 +21,7 @@ const INITIAL_FORM: CheckoutForm = {
     country: 'Vietnam', postalCode: '', phone: '',
   },
   shippingMethod: 'free',
-  payment: { method: 'credit-card' },
+  payment: { method: 'payos' },
 };
 
 const CheckoutPage: React.FC = () => {
@@ -496,83 +496,7 @@ const CheckoutPage: React.FC = () => {
                   Tất cả giao dịch đều được bảo mật và mã hóa.
                 </p>
 
-                {/* Credit Card */}
-                <label className={`checkout-payment-method ${form.payment.method === 'credit-card' ? 'active' : ''}`}>
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    value="credit-card"
-                    checked={form.payment.method === 'credit-card'}
-                    onChange={() => setForm(p => ({ ...p, payment: { ...p.payment, method: 'credit-card' } }))}
-                  />
-                  <span className="checkout-payment-method__radio" />
-                  <span>Thẻ tín dụng</span>
-                  <div className="checkout-payment-method__icons">
-                    <span className="checkout-card-icon visa">VISA</span>
-                    <span className="checkout-card-icon mc">MC</span>
-                    <span className="checkout-card-icon jcb">JCB</span>
-                  </div>
-                </label>
-
-                {form.payment.method === 'credit-card' && (
-                  <div className="checkout-card-fields">
-                    <div className="form-group">
-                      <input
-                        type="text"
-                        className="form-control checkout-card-number"
-                        placeholder="Số thẻ"
-                        value={cardNum}
-                        onChange={e => setCardNum(formatCardNum(e.target.value))}
-                        required
-                        maxLength={19}
-                        autoComplete="cc-number"
-                      />
-                      <div className="checkout-card-lock">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                          <path d="M7 11V7a5 5 0 0110 0v4" />
-                        </svg>
-                      </div>
-                    </div>
-                    <div className="form-group">
-                      <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Tên trên thẻ"
-                        value={cardName}
-                        onChange={e => setCardName(e.target.value)}
-                        required
-                        autoComplete="cc-name"
-                      />
-                    </div>
-                    <div className="checkout-form__row">
-                      <div className="form-group">
-                        <input
-                          type="text"
-                          className="form-control"
-                          placeholder="Ngày hết hạn (MM / YY)"
-                          value={expiry}
-                          onChange={e => setExpiry(formatExpiry(e.target.value))}
-                          required
-                          maxLength={5}
-                          autoComplete="cc-exp"
-                        />
-                      </div>
-                      <div className="form-group" style={{ position: 'relative' }}>
-                        <input
-                          type="text"
-                          className="form-control"
-                          placeholder="Mã bảo mật"
-                          value={cvv}
-                          onChange={e => setCvv(e.target.value.replace(/\D/g, '').slice(0, 4))}
-                          required
-                          maxLength={4}
-                          autoComplete="cc-csc"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                )}
+                {/* Credit Card payment method removed */}
 
 
                 {/* PayOS */}
