@@ -6,18 +6,12 @@ namespace web_Trang_suc_BE.Models.Entities
     [Table("wishlist")]
     public class Wishlist
     {
-        [Key]
-        [Column("id")]
-        public int Id { get; set; }
-
         [Column("userId")]
+        [Required]
         public string UserId { get; set; } = string.Empty;
 
         [Column("productId")]
         public long ProductId { get; set; }
-
-        [Column("addedAt")]
-        public DateTime AddedAt { get; set; } = DateTime.UtcNow;
 
         // Navigation properties
         [ForeignKey("UserId")]

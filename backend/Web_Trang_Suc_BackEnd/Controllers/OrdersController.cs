@@ -290,6 +290,14 @@ namespace web_Trang_suc_BE.Controllers
                     order.PaidAt = DateTime.Now;
                 }
             }
+            else if (dto.Status == "Hủy")
+            {
+                order.PaymentStatus = "Failed";
+            }
+            else if (dto.Status == "Chờ xác nhận")
+            {
+                order.PaymentStatus = "Pending";
+            }
 
             order.OrderStatus = dto.Status;
             await _context.SaveChangesAsync();

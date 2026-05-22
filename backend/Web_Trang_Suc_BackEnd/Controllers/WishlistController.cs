@@ -38,23 +38,25 @@ namespace web_Trang_suc_BE.Controllers
         }
 
         /// <summary>
-        /// Lấy chi tiết một mục yêu thích theo ID
+        /// Lấy chi tiết một mục yêu thích theo userId và productId
         /// </summary>
-        /// <param name="id">ID của mục yêu thích</param>
+        /// <param name="userId">ID người dùng</param>
+        /// <param name="productId">ID sản phẩm</param>
         /// <returns>Chi tiết mục yêu thích</returns>
         /// <response code="200">Trả về chi tiết thành công</response>
         /// <response code="404">Không tìm thấy mục yêu thích</response>
         /// <response code="401">Chưa xác thực</response>
-        [HttpGet("{id}")]
+        [HttpGet("{userId}/{productId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<Wishlist>> GetWishlist(int id)
+        public async Task<ActionResult<Wishlist>> GetWishlist(string userId, long productId)
         {
             if (_context.Wishlists == null)
                 return NotFound(new { message = "Mục yêu thích không tồn tại" });
 
-            var wishlist = await _context.Wishlists.Include(w => w.User).Include(w => w.Product).FirstOrDefaultAsync(w => w.Id == id);
+            var wishlist = await _context.Wishlists.Include(w => w.User).Include(w => w.Product)
+                .FirstOrDefaultAsync(w => w.UserId == userId && w.ProductId == productId);
 
             if (wishlist == null)
             {
@@ -81,27 +83,28 @@ namespace web_Trang_suc_BE.Controllers
             _context.Wishlists?.Add(wishlist);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetWishlist", new { id = wishlist.Id }, wishlist);
+            return CreatedAtAction("GetWishlist", new { userId = wishlist.UserId, productId = wishlist.ProductId }, wishlist);
         }
 
         /// <summary>
         /// Xóa một mục khỏi danh sách yêu thích
         /// </summary>
-        /// <param name="id">ID của mục yêu thích cần xóa</param>
+        /// <param name="userId">ID người dùng</param>
+        /// <param name="productId">ID sản phẩm</param>
         /// <returns>Không trả về nội dung</returns>
         /// <response code="204">Xóa thành công</response>
         /// <response code="404">Không tìm thấy mục yêu thích</response>
         /// <response code="401">Chưa xác thực</response>
-        [HttpDelete("{id}")]
+        [HttpDelete("{userId}/{productId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> DeleteWishlist(int id)
+        public async Task<IActionResult> DeleteWishlist(string userId, long productId)
         {
             if (_context.Wishlists == null)
                 return NotFound(new { message = "Mục yêu thích không tồn tại" });
 
-            var wishlist = await _context.Wishlists.FindAsync(id);
+            var wishlist = await _context.Wishlists.FindAsync(userId, productId);
             if (wishlist == null)
             {
                 return NotFound(new { message = "Mục yêu thích không tồn tại" });
