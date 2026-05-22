@@ -199,6 +199,35 @@ namespace web_Trang_suc_BE.Controllers
             }
         }
 
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto dto)
+        {
+            if (dto == null || string.IsNullOrEmpty(dto.Email))
+                return BadRequest(new { message = "Email không được để trống." });
+
+            var email = dto.Email.Trim().ToLower();
+            var user = await _context.Users!.FirstOrDefaultAsync(u => u.Email.ToLower() == email);
+
+            if (user == null)
+                return NotFound(new { message = "Email này không tồn tại trong hệ thống." });
+
+            if (user.Provider == "google")
+                return BadRequest(new { message = "Tài khoản này đăng ký qua Google, vui lòng đăng nhập bằng Google." });
+
+            // Generate simple temporary password
+            string tempPassword = "Velmora" + new Random().Next(100, 999) + "@";
+            
+            // Hash and update password
+            user.Password = BCrypt.Net.BCrypt.HashPassword(tempPassword);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { 
+                message = "Khôi phục mật khẩu thành công!", 
+                tempPassword = tempPassword,
+                hint = $"Mật khẩu mới của bạn là: {tempPassword}. Vui lòng đăng nhập và đổi lại mật khẩu trong trang Cá Nhân."
+            });
+        }
+
         public class GoogleUserInfoDto
         {
             [System.Text.Json.Serialization.JsonPropertyName("email")]
@@ -207,6 +236,11 @@ namespace web_Trang_suc_BE.Controllers
             public string? Name { get; set; }
             [System.Text.Json.Serialization.JsonPropertyName("picture")]
             public string? Picture { get; set; }
+        }
+
+        public class ForgotPasswordDto
+        {
+            public string Email { get; set; } = string.Empty;
         }
 
 
