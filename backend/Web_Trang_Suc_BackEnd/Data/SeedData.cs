@@ -17,7 +17,7 @@ namespace web_Trang_suc_BE.Data
                         Id = Guid.NewGuid().ToString(),
                         FullName = "Admin",
                         Email = "admin@velmora.com",
-                        Password = BCrypt.Net.BCrypt.HashPassword("Admin@123"),
+                        Password = BCrypt.Net.BCrypt.HashPassword("Admin@123"),  
                         Role = "admin",
                         Provider = "email",
                         CreatedAt = DateTime.UtcNow

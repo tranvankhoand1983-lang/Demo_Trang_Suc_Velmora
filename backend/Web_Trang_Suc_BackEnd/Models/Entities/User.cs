@@ -7,9 +7,8 @@ namespace web_Trang_suc_BE.Models.Entities
     public class User
     {
         [Key]
-        [Column("id")]
-        public string Id { get; set; } = Guid.NewGuid().ToString();
-
+[Column("id", TypeName = "char(36)")] // Ép kiểu rõ ràng là char(36)
+public string Id { get; set; } = Guid.NewGuid().ToString();
         [Column("fullName")]
         [Required]
         [MaxLength(255)]

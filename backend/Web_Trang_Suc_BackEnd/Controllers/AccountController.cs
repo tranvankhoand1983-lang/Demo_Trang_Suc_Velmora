@@ -57,7 +57,7 @@ namespace web_Trang_suc_BE.Controllers
                 var email = dto.Email?.Trim().ToLower();
                 var password = dto.Password; // Don't trim password as it might have intentional spaces
                 
-                var user = await _context.Users!.FirstOrDefaultAsync(u => u.Email.ToLower() == email);
+               var user = await _context.Users!.FirstOrDefaultAsync(u => u.Email.ToLower() == email);
 
                 if (user == null || string.IsNullOrEmpty(user.Password)) {
                     Console.WriteLine($"LOGIN FAIL: User not found or no password for {email}");
@@ -213,8 +213,8 @@ namespace web_Trang_suc_BE.Controllers
         private string CreateToken(User user)
         {
             var claims = new List<Claim> {
-                new Claim(ClaimTypes.NameIdentifier, user.Id),
-                new Claim("userId", user.Id), // Explicit claim for easier retrieval
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim("userId", user.Id.ToString()),  // Explicit claim for easier retrieval
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Role, user.Role),
                 new Claim("FullName", user.FullName)
