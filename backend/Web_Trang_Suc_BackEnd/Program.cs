@@ -50,6 +50,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+// Configure PayOS
+builder.Services.AddSingleton<PayOS.PayOSClient>(sp =>
+{
+    var config = sp.GetRequiredService<IConfiguration>();
+    var clientId = config["PayOS:ClientId"] ?? throw new InvalidOperationException("PayOS ClientId is missing");
+    var apiKey = config["PayOS:ApiKey"] ?? throw new InvalidOperationException("PayOS ApiKey is missing");
+    var checksumKey = config["PayOS:ChecksumKey"] ?? throw new InvalidOperationException("PayOS ChecksumKey is missing");
+    return new PayOS.PayOSClient(clientId, apiKey, checksumKey);
+});
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
