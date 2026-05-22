@@ -9,3 +9,4 @@ dist/
 
 # Chặn file cấu hình cá nhân
 .env
+backend/Web_Trang_Suc_BackEnd/appsettings.Development.json
