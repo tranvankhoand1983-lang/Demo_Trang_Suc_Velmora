@@ -111,7 +111,7 @@ const ContentManagement: React.FC = () => {
     try {
       const response = await api.put('/shopsettings', settings);
       setSettings(response.data);
-      showToast('✅ Cài đặt hệ thống đã được lưu!');
+      showToast('Cài đặt hệ thống đã được lưu!');
     } catch (error: any) {
       showToast(error.response?.data?.message || 'Lỗi khi lưu cài đặt', 'error');
     }
