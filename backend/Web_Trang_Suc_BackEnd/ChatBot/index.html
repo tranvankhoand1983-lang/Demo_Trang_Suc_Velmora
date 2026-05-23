@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Velmora AI Chat Widget</title>
+    <style>
+        :root {
+            --gold-color: #d4b26f; /* Màu vàng Gold chuẩn của Velmora */
+            --bg-dark-heavy: #111111; /* Nền đen sâu */
+            --bg-dark-light: #1a1a1a; /* Nền đen xám của khung chat */
+            --bubble-color: #8c1d18; /* Màu đỏ đô sang trọng của nút gốc */
+            --text-light: #f5f5f5;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background-color: #222; /* Giả lập nền web để dễ nhìn */
+        }
+
+        /* --- 1. BIỂU TƯỢNG BONG BÓNG CHAT GÓC MÀN HÌNH --- */
+        #velmora-chat-bubble {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            width: 60px;
+            height: 60px;
+            /* Đổi sang màu đỏ nhung/đỏ rượu sang trọng, bỏ hẳn màu đen pha nền */
+            background: #0f0303; 
+            border-radius: 50%;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+            cursor: pointer;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* Viền trắng mờ nhẹ tạo độ nổi khối thay vì viền vàng */
+            border: 1.5px solid rgba(255, 255, 255, 0.4); 
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        #velmora-chat-bubble:hover {
+            transform: scale(1.08);
+            background: #d77402; /* Hiệu ứng sáng lên nhẹ khi di chuột vào */
+            box-shadow: 0 6px 20px rgba(156, 36, 36, 0.4);
+        }
+
+        /* Icon SVG chat bên trong bong bóng */
+        #velmora-chat-bubble svg {
+            width: 26px;
+            height: 26px;
+            /* Đổi icon từ màu vàng gold sang màu TRẮNG TINH KHIẾT để cực kỳ nổi bật trên nền đỏ */
+            fill: #ffffff; 
+        }
+
+       /* --- CỬA SỔ CHAT CAO CẤP (ĐÃ THU NHỎ CHO GỌN) --- */
+        #velmora-chat-window {
+            position: fixed;
+            bottom: 105px;
+            right: 25px;
+            width: 340px; /* Giảm từ 380px xuống 340px cho thanh mảnh */
+            height: 480px; /* Giảm từ 580px xuống 480px cho vừa vặn */
+            background-color: var(--bg-dark-light);
+            border-radius: 12px; /* Bo góc nhẹ hơn một chút cho hợp kích thước mới */
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid rgba(212, 178, 111, 0.3);
+            z-index: 9998;
+            transform: scale(0);
+            transform-origin: bottom right;
+            transition: transform 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        #velmora-chat-window.open {
+            display: flex;
+            transform: scale(1);
+        }
+
+        /* Thanh Header */
+        .chat-header {
+            background-color: var(--bg-dark-heavy);
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(212, 178, 111, 0.2);
+        }
+
+        .header-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-info .avatar {
+            width: 36px;
+            height: 36px;
+            background-color: #222;
+            border: 1px solid var(--gold-color);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--gold-color);
+            font-weight: 600;
+            font-size: 15px;
+            letter-spacing: 1px;
+        }
+
+        .header-info h4 {
+            margin: 0;
+            font-size: 14px;
+            color: var(--gold-color);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .header-info span {
+            font-size: 11px;
+            color: #888;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 2px;
+        }
+        .header-info span::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background-color: #d4b26f;
+            border-radius: 50%;
+        }
+
+        #close-chat {
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 24px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        #close-chat:hover { color: var(--gold-color); }
+
+        /* Vùng Nội Dung Tin Nhắn */
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: #141414;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        /* Định dạng chung tin nhắn */
+        .message {
+            max-width: 80%;
+            padding: 11px 15px;
+            border-radius: 10px;
+            font-size: 13.5px;
+            line-height: 1.5;
+            letter-spacing: 0.3px;
+        }
+
+        /* Tin nhắn của khách */
+        .message.user {
+            background-color: #2a2a2a;
+            color: #e0e0e0;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+            border: 1px solid #3a3a3a;
+        }
+
+        /* Tin nhắn của Bot AI Velmora */
+        .message.bot {
+            background-color: var(--bg-dark-heavy);
+            color: #e5e5e5;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+            border: 1px solid rgba(212, 178, 111, 0.15);
+        }
+
+        /* Hiệu ứng ba chấm vàng nhấp nháy */
+        .typing-indicator {
+            display: flex;
+            gap: 5px;
+            padding: 6px 4px 3px 4px;
+            align-items: center;
+        }
+        .typing-indicator span {
+            width: 6px;
+            height: 6px;
+            background-color: var(--gold-color);
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0.3); opacity: 0.4; }
+            40% { transform: scale(1.1); opacity: 1; }
+        }
+
+        /* Khung Nhập Liệu ở đáy */
+        .chat-input-area {
+            padding: 15px;
+            background-color: var(--bg-dark-heavy);
+            display: flex;
+            gap: 10px;
+            border-top: 1px solid rgba(212, 178, 111, 0.15);
+            align-items: center;
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            padding: 11px 16px;
+            background-color: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 6px;
+            outline: none;
+            font-size: 13px;
+            color: var(--text-light);
+            transition: border-color 0.3s;
+        }
+
+        .chat-input-area input:focus {
+            border-color: var(--gold-color);
+        }
+
+        .chat-input-area button {
+            background-color: transparent;
+            color: var(--gold-color);
+            border: 1px solid var(--gold-color);
+            padding: 10px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.3s;
+        }
+
+        .chat-input-area button:hover {
+            background-color: var(--gold-color);
+            color: var(--bg-dark-heavy);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="velmora-chat-bubble" onclick="toggleChatWindow()">
+        <svg viewBox="0 0 24 24">
+            <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
+        </svg>
+    </div>
+
+    <div id="velmora-chat-window">
+        <div class="chat-header">
+            <div class="header-info">
+                <div class="avatar">V</div>
+                <div>
+                    <h4>Velmora Assistant</h4>
+                    <span>Trực tuyến</span>
+                </div>
+            </div>
+            <button id="close-chat" onclick="toggleChatWindow()">&times;</button>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot">Dạ, Velmora Jewelry xin chào anh/chị. Cửa hàng có thể trợ giúp gì cho hành trình tìm kiếm món trang sức hoàn hảo của mình ạ? ✨</div>
+        </div>
+
+        <div class="chat-input-area">
+            <input type="text" id="userInput" placeholder="Nhắn tin cho Velmora..." onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()">GỬI</button>
+        </div>
+    </div>
+
+<script>
+    const chatBubble = document.getElementById('velmora-chat-bubble');
+    const chatWindow = document.getElementById('velmora-chat-window');
+    const chatMessages = document.getElementById('chatMessages');
+    const userInput = document.getElementById('userInput');
+
+    function toggleChatWindow() {
+        if (chatWindow.classList.contains('open')) {
+            chatWindow.classList.remove('open');
+            setTimeout(() => chatWindow.style.display = 'none', 300);
+            chatBubble.style.transform = 'scale(1)';
+        } else {
+            chatWindow.style.display = 'flex';
+            setTimeout(() => chatWindow.classList.add('open'), 10);
+            chatBubble.style.transform = 'scale(0)';
+        }
+    }
+
+    function handleKeyPress(event) {
+        if (event.key === 'Enter') { sendMessage(); }
+    }
+
+    function sendMessage() {
+        const text = userInput.value.trim();
+        if (!text) return;
+
+        appendMessage(text, 'user');
+        userInput.value = '';
+
+        const typingId = appendTypingIndicator();
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: text })
+        })
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById(typingId).remove();
+            appendMessage(data.reply, 'bot');
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        })
+        .catch(err => {
+            document.getElementById(typingId).remove();
+            appendMessage("Dạ, hệ thống đang bận một chút, anh/chị thử lại sau giây lát nhé!", 'bot');
+        });
+    }
+
+    function appendMessage(text, sender) {
+        const msgDiv = document.createElement('div');
+        msgDiv.classList.add('message', sender);
+        msgDiv.innerText = text;
+        chatMessages.appendChild(msgDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function appendTypingIndicator() {
+        const id = 'typing_' + Date.now();
+        const msgDiv = document.createElement('div');
+        msgDiv.classList.add('message', 'bot');
+        msgDiv.id = id;
+        msgDiv.innerHTML = `<div class="typing-indicator"><span></span><span></span><span></span></div>`;
+        chatMessages.appendChild(msgDiv);
+        return id;
+    }
+</script>
+</body>
+</html>

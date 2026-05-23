@@ -12,6 +12,7 @@ import AuthModal from './Components/auth/AuthModal';
 import VoucherPopup from './Components/VoucherPopup';
 import Notification from './Components/common/Notification';
 import { NotificationProvider } from './store/NotificationContext';
+import AiChatbot from './Components/layout/AiChatbot';
 
 import HomePage from './pages/customer/HomePage';
 import AboutPage from './pages/customer/AboutPage';
@@ -103,6 +104,7 @@ function AppContent() {
           <CartDrawer />
           <AuthModal />
           <VoucherPopup isOpen={isVoucherOpen} onClose={closeVoucher} />
+          <AiChatbot />
         </>
       } />
     </Routes>

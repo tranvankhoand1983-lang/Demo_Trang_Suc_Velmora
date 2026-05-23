@@ -27,5 +27,10 @@
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="payOS" Version="2.1.0" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="ChatBot\data.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 
 </Project>
