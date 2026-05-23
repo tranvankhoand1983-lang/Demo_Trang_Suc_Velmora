@@ -8,8 +8,26 @@ namespace web_Trang_suc_BE.Controllers
     [ApiController]
     public class ChatController : ControllerBase
     {
-        private static readonly string API_KEY = "AIzaSyC0ksbPfa2Z5888H3fk4WMfzYBhTlFSvyc";
-        private static readonly string GEMINI_URL = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key={API_KEY}";
+        private static string GetApiKey()
+        {
+            try 
+            {
+                // Ưu tiên 1: Đọc từ file api_key.txt (Chạy ở Local) - File này đã bị ẩn khỏi Git
+                string path = Path.Combine(System.IO.Directory.GetCurrentDirectory(), "api_key.txt");
+                if (System.IO.File.Exists(path)) {
+                    return System.IO.File.ReadAllText(path).Trim();
+                }
+                // Ưu tiên 2: Đọc từ biến môi trường (Nếu chạy trên mạng Railway)
+                var envKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY");
+                if (!string.IsNullOrEmpty(envKey)) return envKey.Trim();
+                
+                return "KEY_NOT_FOUND";
+            }
+            catch { return ""; }
+        }
+
+        // Đã đổi sang model gemini-2.5-flash theo yêu cầu của sếp! Bản này xài thả ga không lo giới hạn.
+        private static string GEMINI_URL => $"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={GetApiKey()}";
         private static string _trainingData = "";
 
         public ChatController()
