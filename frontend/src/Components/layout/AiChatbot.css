@@ -24,6 +24,44 @@
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
+/* Nhãn hướng dẫn khách hàng luôn hiện */
+.bubble-tooltip {
+  position: absolute;
+  right: 75px; /* Đẩy sang trái bong bóng */
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #fff;
+  color: var(--gold-color);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  pointer-events: none;
+  border: 1px solid rgba(212, 178, 111, 0.3);
+  /* Hiệu ứng nhịp thở nhẹ nhàng gây chú ý */
+  animation: pulse-tooltip 2s infinite ease-in-out;
+}
+
+/* Tạo hình mũi tên nhỏ chỉ vào bong bóng */
+.bubble-tooltip::after {
+  content: '';
+  position: absolute;
+  right: -5px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 6px 0 6px 6px;
+  border-style: solid;
+  border-color: transparent transparent transparent #fff;
+}
+
+@keyframes pulse-tooltip {
+  0% { transform: translateY(-50%) scale(1); }
+  50% { transform: translateY(-50%) scale(1.03); }
+  100% { transform: translateY(-50%) scale(1); }
+}
+
 .velmora-chat-bubble.hide {
   transform: scale(0) !important;
   pointer-events: none;
