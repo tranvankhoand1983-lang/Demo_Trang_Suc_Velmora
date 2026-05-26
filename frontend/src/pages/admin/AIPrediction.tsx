@@ -34,6 +34,16 @@ const AIPrediction: React.FC = () => {
       cpi_t1: parseFloat(formData.cpi_t1), gold_t1: parseFloat(formData.gold_t1), interest_t1: parseFloat(formData.interest_t1)
     };
 
+    if (payload.cpi_t3 <= 0 || payload.cpi_t2 <= 0 || payload.cpi_t1 <= 0) {
+      setError('Lỗi logic: Chỉ số CPI bắt buộc phải lớn hơn 0!');
+      return;
+    }
+
+    if (payload.gold_t3 <= 0 || payload.gold_t2 <= 0 || payload.gold_t1 <= 0) {
+      setError('Lỗi logic: Giá vàng bắt buộc phải lớn hơn 0!');
+      return;
+    }
+
     setLoading(true);
     setError(null);
     try {
