@@ -8,7 +8,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Trong thực tế nên giới hạn domain
+    allow_origins=["*"],  
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -38,7 +38,6 @@ import io
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
-# Load và train model 1 lần duy nhất khi khởi động API
 try:
     script_dir = os.path.dirname(os.path.abspath(__file__))
     data_path = os.path.join(script_dir, 'data', 'cpi_dataset.csv')
@@ -76,7 +75,6 @@ def predict_inflation(request: PredictionRequest):
     prediction = model.predict(input_data)[0]
     diff = prediction - request.cpi_t1
     
-    # Logic tư vấn kinh doanh y hệt như trên Web Streamlit
     risk_level = 0
     message = ""
     action_recommend = []
