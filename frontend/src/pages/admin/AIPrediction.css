@@ -1,0 +1,221 @@
+.ai-prediction-container {
+  padding: 2rem;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  font-family: var(--font-sans);
+}
+
+.ai-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--color-gold);
+}
+
+.ai-header h1 {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--color-charcoal);
+  font-family: var(--font-serif);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: 2rem;
+  letter-spacing: 1px;
+}
+
+.ai-header p {
+  color: var(--color-muted);
+  font-size: 1rem;
+  font-family: var(--font-sans);
+}
+
+.ai-inputs-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  margin-bottom: 2rem;
+}
+
+.ai-inputs-card h3 {
+  margin-bottom: 1.5rem;
+  color: var(--color-charcoal);
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.ai-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.input-group {
+  background: #fdfdfd;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.input-group label {
+  display: block;
+  font-weight: 600;
+  color: #d4af37;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 0.5rem;
+}
+
+.input-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.input-row span {
+  font-size: 0.9rem;
+  color: #495057;
+  font-weight: 500;
+}
+
+.input-row input {
+  width: 60%;
+  padding: 0.5rem;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 0.95rem;
+}
+
+.input-row input:focus {
+  outline: none;
+  border-color: #d4af37;
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+}
+
+.predict-btn {
+  width: 100%;
+  background-color: #1a252f;
+  color: #d4af37;
+  border: 1px solid #d4af37;
+  padding: 1rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-transform: uppercase;
+}
+
+.predict-btn:hover:not(:disabled) {
+  background-color: #d4af37;
+  color: white;
+  box-shadow: 0 6px 12px rgba(212, 175, 55, 0.3);
+}
+
+.predict-btn:disabled {
+  background-color: #e9ecef;
+  color: #6c757d;
+  border-color: #dee2e6;
+  cursor: not-allowed;
+}
+
+.error-msg {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #fff3f3;
+  color: #dc3545;
+  border: 1px solid #ffc107;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+.ai-result-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+  overflow: hidden;
+}
+
+.risk-level-banner {
+  padding: 1.5rem 2rem;
+  color: white;
+}
+
+.risk-4 { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+.risk-3 { background: linear-gradient(135deg, #f39c12, #d35400); }
+.risk-2 { background: linear-gradient(135deg, #3498db, #2980b9); }
+.risk-1 { background: linear-gradient(135deg, #2ecc71, #27ae60); }
+
+.risk-level-banner h2 {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  font-family: var(--font-serif);
+  letter-spacing: 0.5px;
+}
+
+.risk-level-banner p {
+  font-size: 1.1rem;
+  opacity: 0.95;
+  font-family: var(--font-sans);
+}
+
+.advice-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  padding: 2rem;
+}
+
+.advice-box {
+  padding: 1.5rem;
+  border-radius: 8px;
+}
+
+.advice-box.recommend {
+  background-color: #f8fff9;
+  border-left: 4px solid #2ecc71;
+}
+
+.advice-box.avoid {
+  background-color: #fff5f5;
+  border-left: 4px solid #e74c3c;
+}
+
+.advice-box h4 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  font-family: var(--font-serif);
+  font-weight: 600;
+}
+
+.advice-box.recommend h4 { color: #27ae60; }
+.advice-box.avoid h4 { color: #c0392b; }
+
+.advice-box ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.advice-box ul li {
+  position: relative;
+  padding-left: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: #34495e;
+  line-height: 1.5;
+}
+
+.advice-box ul li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: currentColor;
+  font-weight: bold;
+}

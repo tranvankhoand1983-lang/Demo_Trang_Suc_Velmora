@@ -14,7 +14,8 @@ import {
   Home,
   Bell,
   Moon,
-  Search
+  Search,
+  TrendingUp
 } from 'lucide-react';
 import './AdminLayout.css';
 
@@ -59,6 +60,7 @@ const AdminLayout: React.FC = () => {
     { path: '/admin/customers', label: 'Khách hàng', icon: <Users size={20} /> },
     { path: '/admin/content', label: 'Nội dung', icon: <FileText size={20} /> },
     { path: '/admin/orders', label: 'Đơn hàng', icon: <ShoppingBag size={20} /> },
+    { path: '/admin/ai-prediction', label: 'AI Dự báo', icon: <TrendingUp size={20} /> },
     { path: '/admin/settings', label: 'Cấu hình', icon: <Settings size={20} /> },
   ];
 

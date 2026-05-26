@@ -36,6 +36,7 @@ import CustomerList from './pages/admin/CustomerList';
 import ContentManagement from './pages/admin/ContentManagement';
 import OrderList from './pages/admin/OrderList';
 import AdminPlaceholder from './pages/admin/AdminPlaceholder';
+import AIPrediction from './pages/admin/AIPrediction';
 import './index.css';
 
 function AppContent() {
@@ -77,6 +78,7 @@ function AppContent() {
         <Route path="customers" element={<CustomerList />} />
         <Route path="content" element={<ContentManagement />} />
         <Route path="orders" element={<OrderList />} />
+        <Route path="ai-prediction" element={<AIPrediction />} />
         <Route path="settings" element={<AdminPlaceholder title="Cấu hình hệ thống" />} />
       </Route>
 
