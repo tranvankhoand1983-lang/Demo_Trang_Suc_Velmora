@@ -194,12 +194,23 @@ AI API chạy tại: `http://localhost:8000`
 
 <h4>1. Giao diện Trang chủ (HomePage)</h4>
 <img width="1822" height="838" alt="image" src="https://github.com/user-attachments/assets/53d5edd2-8617-4ce4-87b1-13333d103071" />
+<img width="1822" height="838" alt="image" src="https://github.com/user-attachments/assets/c47c0880-a042-4a6f-a2ee-23c939f39927" />
+<img width="1822" height="838" alt="image" src="https://github.com/user-attachments/assets/171da3ec-a85c-415e-ad12-d6ede31cfb55" />
+<img width="1822" height="838" alt="image" src="https://github.com/user-attachments/assets/79194c64-6e28-4947-b624-d7048bb65595" />
+
+### Giao diện chatbot 
+<img width="545" height="750" alt="image" src="https://github.com/user-attachments/assets/f76d85c6-0a1c-4cd9-8be4-9f4116828ee0" />
+
 
 <h4>2. Chi tiết sản phẩm & Thêm vào giỏ hàng</h4>
-<img width="1665" height="855" alt="image" src="https://github.com/user-attachments/assets/6b0e3a84-7e32-4192-a661-39ba27067b4e" />
+<img width="1665" height="855" alt="image" src="https://github.com/user-attachments/assets/6b0e3a84-7e32-4192-a661-39ba27067b4e" />\
+<img width="1674" height="840" alt="image" src="https://github.com/user-attachments/assets/f12cc9cc-a8f2-42d7-80a4-57501d1377f9" />
 
 <h4>3. Trang Thanh toán (Checkout)</h4>
 <img width="1832" height="842" alt="image" src="https://github.com/user-attachments/assets/39cf1b56-c38e-46f2-844c-ad8ef010f0fa" />
+### Thanh toán qr bằng Payos
+<img width="1686" height="854" alt="image" src="https://github.com/user-attachments/assets/a577ea0a-be32-4552-819f-37381d053fec" />
+
 
 <h4>4. Tổng quan hệ thống (Dashboard Statistics)</h4>
 <img width="1830" height="846" alt="image" src="https://github.com/user-attachments/assets/bf80841e-327f-4870-ab76-dcf040bfe90c" />
