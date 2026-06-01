@@ -1,20 +1,18 @@
 # Velmora - Website Bán Trang Sức Cao Cấp
+### 🌐 Link Online Đã Deploy
+* **Frontend Website:** [https://demo-trang-suc-velmora.pages.dev](https://demo-trang-suc-velmora.pages.dev)
+* **Video Demo sản phẩm:** [https://youtu.be/uaEh1d9xPx8?si=rSosjRp4OFBEeNkC](#)
 
-
-
+---
 ## 1. Tên đề tài
 
 Xây dựng Website Bán Trang Sức – Velmora
-
-
 
 ## 2. Giới thiệu Website / Hệ thống
 
 Velmora là một website thương mại điện tử chuyên về kinh doanh trang sức cao cấp, được xây dựng theo kiến trúc Full-Stack gồm 3 tầng: Frontend (React + TypeScript), Backend (ASP.NET Core 8.0 Web API) và Database (MySQL 8.0).
 
 Hệ thống phục vụ hai nhóm người dùng chính là Khách hàng và Quản trị viên (Admin), đồng thời tích hợp thêm module AI dự báo lạm phát (CPI) hỗ trợ quyết định kinh doanh cho Ban quản trị.
-
-
 
 ## 3. Danh sách thành viên – Nhóm 14
 
@@ -194,22 +192,40 @@ AI API chạy tại: `http://localhost:8000`
 
 ## 10. Hình ảnh minh họa hệ thống
 
-*(Chèn ảnh chụp màn hình vào đây)*
+<h4>1. Giao diện Trang chủ (HomePage)</h4>
+<img width="1822" height="838" alt="image" src="https://github.com/user-attachments/assets/53d5edd2-8617-4ce4-87b1-13333d103071" />
+
+<h4>2. Chi tiết sản phẩm & Thêm vào giỏ hàng</h4>
+<img width="1665" height="855" alt="image" src="https://github.com/user-attachments/assets/6b0e3a84-7e32-4192-a661-39ba27067b4e" />
+
+<h4>3. Trang Thanh toán (Checkout)</h4>
+<img width="1832" height="842" alt="image" src="https://github.com/user-attachments/assets/39cf1b56-c38e-46f2-844c-ad8ef010f0fa" />
+
+<h4>4. Tổng quan hệ thống (Dashboard Statistics)</h4>
+<img width="1830" height="846" alt="image" src="https://github.com/user-attachments/assets/bf80841e-327f-4870-ab76-dcf040bfe90c" />
+
+<h4>5. Quản lý sản phẩm , khách hàng, đơn hàng , khuyến mãi</h4>
+<img width="1830" height="832" alt="image" src="https://github.com/user-attachments/assets/120799ee-8bde-41fe-a5a5-f3190a3d179f" />
+<img width="1830" height="832" alt="image" src="https://github.com/user-attachments/assets/774158c6-5b97-4620-b425-116d13f18eac" />
+<img width="1830" height="832" alt="image" src="https://github.com/user-attachments/assets/5e88fffa-281f-4922-b3e7-6e287b407543" />
+<img width="1830" height="832" alt="image" src="https://github.com/user-attachments/assets/2543f500-6cce-48be-910f-aa4a52c81e05" />
 
 
 
-## 11. Link video demo
-
-Video demo: [Xem tại đây](#)
 
 
 
-## 12. Link online đã deploy
 
-| Thành phần | Link |
-| :--- | :--- |
-| Frontend | https://demo-trang-suc-velmora.pages.dev |
-| Backend API | Đang chạy tại localhost:5278 |
-| AI API | Đang chạy tại localhost:8000 |
+
+
+
+
+
+
+
+
+
+
+
 
 
